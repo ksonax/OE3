@@ -84,11 +84,11 @@ class UserInterface(customtkinter.CTk):
 
         self.combobox_cross_method = customtkinter.CTkComboBox(master=self.frame_right,
                                                                values=["One Point Cross", "Two Point Cross",
-                                                                       "Blend Cross", "Uniform Cross"])
+                                                                       "Uniform Cross"])
         self.combobox_cross_method.grid(row=2, column=2, columnspan=1, pady=15, padx=15, sticky="we")
 
         self.combobox_mutation_method = customtkinter.CTkComboBox(master=self.frame_right,
-                                                                  values=["Flip Bit", "Shuffle Indexes", "Gauss"])
+                                                                  values=["Flip Bit", "Shuffle Indexes"])
         self.combobox_mutation_method.grid(row=3, column=2, columnspan=1, pady=15, padx=15, sticky="we")
 
         self.check_box_maximum = customtkinter.CTkCheckBox(master=self.frame_right,

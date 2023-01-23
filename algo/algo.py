@@ -44,7 +44,6 @@ def deap(user_input):
     mutationMethod= user_input.mutation_method
     crossMethod = user_input.cross_method
     selectionMethod = user_input.selection_method
-    print("#######################################\n" + str(maximum) + "\n############################################")
     if maximum:
         creator.create("FitnessMax", base.Fitness, weights=(1.0,))
         creator.create("Individual", list, fitness=creator.FitnessMax)
@@ -60,9 +59,32 @@ def deap(user_input):
     toolbox.register("population", tools.initRepeat, list, toolbox.individual)
     toolbox.register("evaluate", fitnessFunction)
 
-    toolbox.register("select", tools.selTournament, tournsize=3)
-    toolbox.register("mate", tools.cxOnePoint)
-    toolbox.register("mutate", tools.mutFlipBit, indpb=0.05)
+    if selectionMethod == 'Tournament':
+        toolbox.register("select", tools.selTournament, tournsize=3)
+    elif selectionMethod == 'Roulette':
+        toolbox.register("select", tools.selRoulette)
+    elif selectionMethod == 'Random':
+        toolbox.register("select", tools.selRandom)
+    elif selectionMethod == 'Best':
+        toolbox.register("select", tools.selBest)
+    elif selectionMethod == 'Worst':
+        toolbox.register("select", tools.selWorst)
+    elif selectionMethod == 'Double Tournament':
+        toolbox.register("select", tools.selDoubleTournament, tournsize=3)
+
+    if crossMethod == 'One Point Cross':
+        toolbox.register("mate", tools.cxOnePoint)
+    elif crossMethod == 'Two Point Cross':
+        toolbox.register("mate", tools.cxTwoPoint)
+    elif crossMethod == 'Uniform Cross':
+        toolbox.register("mate", tools.cxUniform, indpb=0.05)
+
+    if mutationMethod == 'Flip Bit':
+        toolbox.register("mutate", tools.mutFlipBit, indpb=0.05)
+    elif mutationMethod == 'Shuffle Indexes':
+        toolbox.register("mutate", tools.mutShuffleIndexes, indpb=0.05)
+
+
 
     pop = toolbox.population(n=sizePopulation)
     fitnesses = list(map(toolbox.evaluate, pop))
