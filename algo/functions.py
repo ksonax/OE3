@@ -7,4 +7,4 @@ def beale_function(x):
 # 2
 def beale_function_plot(x1, x2):
     y = pow((1.5 - x1 + x1 * x2), 2) + pow(2.25 - x1 + x1 * pow(x2, 2), 2) + pow((2.625 - x1 + x1 * pow(x2, 3)), 2)
-    return 
+    return y
