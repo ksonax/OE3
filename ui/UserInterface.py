@@ -77,16 +77,18 @@ class UserInterface(customtkinter.CTk):
         self.label_radio_group.grid(row=0, column=2, columnspan=1, pady=15, padx=15, sticky="")
 
         self.combobox_selection_method = customtkinter.CTkComboBox(master=self.frame_right,
-                                                                   values=["Tournament", "Best", "Roulette"])
+                                                                   values=["Tournament", "Best",
+                                                                           "Roulette", "Random",
+                                                                           "Worst", "Double Tournament"])
         self.combobox_selection_method.grid(row=1, column=2, columnspan=1, pady=15, padx=15, sticky="we")
 
         self.combobox_cross_method = customtkinter.CTkComboBox(master=self.frame_right,
                                                                values=["One Point Cross", "Two Point Cross",
-                                                                       "Three Point Cross", "Uniform Cross"])
+                                                                       "Blend Cross", "Uniform Cross"])
         self.combobox_cross_method.grid(row=2, column=2, columnspan=1, pady=15, padx=15, sticky="we")
 
         self.combobox_mutation_method = customtkinter.CTkComboBox(master=self.frame_right,
-                                                                  values=["Edge", "One Point", "Two Point"])
+                                                                  values=["Flip Bit", "Shuffle Indexes", "Gauss"])
         self.combobox_mutation_method.grid(row=3, column=2, columnspan=1, pady=15, padx=15, sticky="we")
 
         self.check_box_maximum = customtkinter.CTkCheckBox(master=self.frame_right,
@@ -99,25 +101,24 @@ class UserInterface(customtkinter.CTk):
         self.entry_population_amount = customtkinter.CTkEntry(master=self.frame_right,
                                                               width=120,
                                                               placeholder_text="Population amount")
-        self.entry_population_amount.grid(row=2, column=0, columnspan=2, pady=15, padx=15, sticky="we")
+        self.entry_population_amount.grid(row=0, column=0, columnspan=2, pady=15, padx=15, sticky="we")
 
 
         self.entry_epochs_amount = customtkinter.CTkEntry(master=self.frame_right,
                                                           width=120,
                                                           placeholder_text="Epochs amount")
-        self.entry_epochs_amount.grid(row=4, column=0, columnspan=2, pady=15, padx=15, sticky="we")
+        self.entry_epochs_amount.grid(row=1, column=0, columnspan=2, pady=15, padx=15, sticky="we")
 
 
         self.entry_cross_probability_amount = customtkinter.CTkEntry(master=self.frame_right,
                                                                      width=120,
                                                                      placeholder_text="Cross probability")
-        self.entry_cross_probability_amount.grid(row=7, column=0, columnspan=2, pady=15, padx=15, sticky="we")
+        self.entry_cross_probability_amount.grid(row=2, column=0, columnspan=2, pady=15, padx=15, sticky="we")
 
         self.entry_mutation_probability = customtkinter.CTkEntry(master=self.frame_right,
                                                                  width=120,
                                                                  placeholder_text="Mutation probability")
-        self.entry_mutation_probability.grid(row=8, column=0, columnspan=2, pady=15, padx=15, sticky="we")
-
+        self.entry_mutation_probability.grid(row=3, column=0, columnspan=2, pady=15, padx=15, sticky="we")
 
         self.button_start = customtkinter.CTkButton(master=self.frame_right,
                                                     text="Start",
