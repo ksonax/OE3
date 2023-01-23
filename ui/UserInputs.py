@@ -11,6 +11,7 @@ class UserInputs:
             mutation_method,
             maximum,
             elite_strategy,
+            real_representation
 
     ):
         self.population_amount = population_amount
@@ -22,3 +23,4 @@ class UserInputs:
         self.mutation_method = mutation_method
         self.maximum = maximum
         self.elite_strategy = elite_strategy
+        self.real_representation = real_representation

@@ -84,19 +84,28 @@ class UserInterface(customtkinter.CTk):
 
         self.combobox_cross_method = customtkinter.CTkComboBox(master=self.frame_right,
                                                                values=["One Point Cross", "Two Point Cross",
-                                                                       "Uniform Cross"])
+                                                                       "Uniform Cross", "Blend Alpha-R"])
         self.combobox_cross_method.grid(row=2, column=2, columnspan=1, pady=15, padx=15, sticky="we")
 
         self.combobox_mutation_method = customtkinter.CTkComboBox(master=self.frame_right,
-                                                                  values=["Flip Bit", "Shuffle Indexes"])
+                                                                  values=["Flip Bit", "Shuffle Indexes", "Gaussian-R"])
         self.combobox_mutation_method.grid(row=3, column=2, columnspan=1, pady=15, padx=15, sticky="we")
 
         self.check_box_maximum = customtkinter.CTkCheckBox(master=self.frame_right,
                                                            text="Maximum")
         self.check_box_maximum.grid(row=4, column=2, pady=15, padx=15, sticky="w")
+
         self.check_box_elite_strategy = customtkinter.CTkCheckBox(master=self.frame_right,
                                                            text="Elite Strategy")
         self.check_box_elite_strategy.grid(row=5, column=2, pady=15, padx=15, sticky="w")
+
+        self.check_box_real_representation = customtkinter.CTkCheckBox(master=self.frame_right,
+                                                                  text="Real Representation*")
+        self.check_box_real_representation.grid(row=6, column=2, pady=15, padx=15, sticky="w")
+
+        self.label_radio_group = customtkinter.CTkLabel(master=self.frame_right,
+                                                        text="*If Real Representation selected => Only Methods with 'R' will work.")
+        self.label_radio_group.grid(row=10, column=1, columnspan=2, pady=15, padx=15, sticky="")
 
         self.entry_population_amount = customtkinter.CTkEntry(master=self.frame_right,
                                                               width=120,
@@ -133,17 +142,18 @@ class UserInterface(customtkinter.CTk):
         self.combobox_mutation_method.set("Mutation Method")
         self.check_box_maximum.select()
         self.check_box_elite_strategy.select()
+        self.check_box_real_representation.select()
 
     def button_start(self):
         x = self.get_user_inputs()
         time_start = time()
-        gen_b_rows, gen_avg_rows, gen_std_dev_rows = algo.deap(x)
+        gen_b_rows, gen_avg_rows, gen_std_dev_rows, best_ind, value = algo.deap(x)
         time_end = time()
         generate_csv(gen_b_rows, gen_avg_rows, gen_std_dev_rows)
         generate_plot()
         time_diff = time_end - time_start
-        #result = 'Execution in sec: %f \n f(%s) = %f' % (round(time_diff, 5), best, best_eval)
-        #messagebox.showinfo("output",  result)
+        result = "Execution in sec: " + str(round(time_diff, 5)) + "s" + "\n [" + str(best_ind) + "] =" + str(value)
+        messagebox.showinfo("output",  result)
 
 
 
@@ -169,4 +179,5 @@ class UserInterface(customtkinter.CTk):
             self.combobox_mutation_method.get(),
             bool(self.check_box_maximum.get()),
             bool(self.check_box_elite_strategy.get()),
+            bool(self.check_box_real_representation.get()),
         )

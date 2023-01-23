@@ -1,10 +1,9 @@
 from deap import base, creator, tools
-from random import random, randint
-
+from random import random, randint, uniform
 import algo.functions_const
-from output.generateoutput import generate_csv, generate_plot
 
 bounds = algo.functions_const.BEALE_FUNCTION_CONST
+
 
 def decode(bound, n_bits, bitstring):
     decoded = list()
@@ -26,8 +25,18 @@ def individual(icls):
     return icls(genome)
 
 
-def fitnessFunction(individual):
-    x = decode(bounds, int(len(individual) / 2), individual)
+def individual_real(icls):
+    genome = list()
+    genome.append(uniform(bounds[0][0], bounds[0][1]))
+    genome.append(uniform(bounds[0][0], bounds[0][1]))
+    return icls(genome)
+
+
+def fitnessFunction(individual, isReal):
+    if isReal:
+        x = individual
+    else:
+        x = decode(bounds, int(len(individual) / 2), individual)
     result = pow((1.5 - x[0] + x[0] * x[1]), 2) + pow(2.25 - x[0] + x[0] * pow(x[1], 2), 2) + pow(
         (2.625 - x[0] + x[0] * pow(x[1], 3)), 2)
 
@@ -41,7 +50,7 @@ def deap(user_input):
     probabilityCrossover = user_input.cross_probability
     numberIteration = user_input.epochs_amount
     maximum = user_input.maximum
-    mutationMethod= user_input.mutation_method
+    mutationMethod = user_input.mutation_method
     crossMethod = user_input.cross_method
     selectionMethod = user_input.selection_method
     if maximum:
@@ -55,9 +64,14 @@ def deap(user_input):
     else:
         numberElitism = 0
     toolbox = base.Toolbox()
-    toolbox.register('individual', individual, creator.Individual)
+
+    if user_input.real_representation:
+        toolbox.register('individual', individual_real, creator.Individual)
+    else:
+        toolbox.register('individual', individual, creator.Individual)
+
     toolbox.register("population", tools.initRepeat, list, toolbox.individual)
-    toolbox.register("evaluate", fitnessFunction)
+    toolbox.register("evaluate", fitnessFunction, isReal=user_input.real_representation)
 
     if selectionMethod == 'Tournament':
         toolbox.register("select", tools.selTournament, tournsize=3)
@@ -72,19 +86,22 @@ def deap(user_input):
     elif selectionMethod == 'Double Tournament':
         toolbox.register("select", tools.selDoubleTournament, tournsize=3)
 
+
     if crossMethod == 'One Point Cross':
         toolbox.register("mate", tools.cxOnePoint)
     elif crossMethod == 'Two Point Cross':
         toolbox.register("mate", tools.cxTwoPoint)
     elif crossMethod == 'Uniform Cross':
         toolbox.register("mate", tools.cxUniform, indpb=0.05)
+    elif crossMethod == 'Blend Alpha-R':
+        toolbox.register("mate", tools.cxBlend, alpha=0.2)
 
     if mutationMethod == 'Flip Bit':
         toolbox.register("mutate", tools.mutFlipBit, indpb=0.05)
     elif mutationMethod == 'Shuffle Indexes':
         toolbox.register("mutate", tools.mutShuffleIndexes, indpb=0.05)
-
-
+    elif mutationMethod == 'Gaussian-R':
+        toolbox.register("mutate", tools.mutGaussian, mu=5, sigma=10, indpb=0.05)
 
     pop = toolbox.population(n=sizePopulation)
     fitnesses = list(map(toolbox.evaluate, pop))
@@ -145,7 +162,11 @@ def deap(user_input):
         print(" Avg %s" % mean)
         print(" Std %s" % std)
     best_ind = tools.selBest(pop, 1)[0]
-    print("Best individual is %s, %s" % (decode(bounds, 20, best_ind), best_ind.fitness.values))
-    #
-    print("-- End of (successful) evolution --")
-    return gen_b_rows, gen_avg_rows, gen_std_dev_rows
+    if user_input.real_representation:
+        print("Best individual is %s, %s" % (str(best_ind), best_ind.fitness.values))
+        print("-- End of (successful) evolution --")
+        return gen_b_rows, gen_avg_rows, gen_std_dev_rows, best_ind, best_ind.fitness.values
+    else:
+        print("Best individual is %s, %s" % (decode(bounds, 20, best_ind), best_ind.fitness.values[0]))
+        print("-- End of (successful) evolution --")
+        return gen_b_rows, gen_avg_rows, gen_std_dev_rows, decode(bounds, 20, best_ind), best_ind.fitness.values[0]
