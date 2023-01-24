@@ -85,7 +85,7 @@ def deap(user_input):
     elif selectionMethod == 'Worst':
         toolbox.register("select", tools.selWorst)
     elif selectionMethod == 'Double Tournament':
-        toolbox.register("select", tools.selDoubleTournament, tournsize=3)
+        toolbox.register("select", tools.selDoubleTournament, fitness_size=sizePopulation, parsimony_size=1.5, fitness_first=True)
 
     if crossMethod == 'One Point Cross':
         toolbox.register("mate", tools.cxOnePoint)
