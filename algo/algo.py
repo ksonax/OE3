@@ -1,6 +1,7 @@
 from deap import base, creator, tools
 from random import random, randint, uniform
 import algo.functions_const
+from methods.cross import *
 
 bounds = algo.functions_const.BEALE_FUNCTION_CONST
 
@@ -86,7 +87,6 @@ def deap(user_input):
     elif selectionMethod == 'Double Tournament':
         toolbox.register("select", tools.selDoubleTournament, tournsize=3)
 
-
     if crossMethod == 'One Point Cross':
         toolbox.register("mate", tools.cxOnePoint)
     elif crossMethod == 'Two Point Cross':
@@ -95,6 +95,16 @@ def deap(user_input):
         toolbox.register("mate", tools.cxUniform, indpb=0.05)
     elif crossMethod == 'Blend Alpha-R':
         toolbox.register("mate", tools.cxBlend, alpha=0.2)
+    elif crossMethod == 'Blend Alpha Beta-R':
+        toolbox.register("mate", blendCrossoverAB, a=0.2, b=0.25, bounds=bounds[0])
+    elif crossMethod == 'Arithmetic Crossover-R':
+        toolbox.register("mate", arithmeticCrossover)
+    elif crossMethod == 'Linear Crossover-R':
+        toolbox.register("mate", linearCrossover, minmax=maximum, bounds=bounds[0])
+    elif crossMethod == 'Arithmetic Crossover-R':
+        toolbox.register("mate", arithmeticCrossover)
+    elif crossMethod == 'Average Crossover-R':
+        toolbox.register("mate", averageCrossover)
 
     if mutationMethod == 'Flip Bit':
         toolbox.register("mutate", tools.mutFlipBit, indpb=0.05)
@@ -102,7 +112,8 @@ def deap(user_input):
         toolbox.register("mutate", tools.mutShuffleIndexes, indpb=0.05)
     elif mutationMethod == 'Gaussian-R':
         toolbox.register("mutate", tools.mutGaussian, mu=5, sigma=10, indpb=0.05)
-
+    elif mutationMethod == 'Uniform Int-R':
+        toolbox.register("mutate", tools.mutUniformInt, low=int(bounds[0][0]), up=int(bounds[0][1]), indpb=0.05)
     pop = toolbox.population(n=sizePopulation)
     fitnesses = list(map(toolbox.evaluate, pop))
     for ind, fit in zip(pop, fitnesses):
